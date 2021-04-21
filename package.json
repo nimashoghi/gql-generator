@@ -26,9 +26,11 @@
   },
   "homepage": "https://github.com/timqian/gql-generator#readme",
   "dependencies": {
+    "@graphql-tools/load-files": "*",
+    "@graphql-tools/merge": "*",
     "commander": "^2.15.1",
     "del": "^3.0.0",
-    "graphql": "^0.13.2"
+    "graphql": "*"
   },
   "devDependencies": {
     "mocha": "^5.0.5",
