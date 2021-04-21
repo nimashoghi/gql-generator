@@ -8,7 +8,7 @@ const { buildASTSchema } = require('graphql');
 const del = require('del');
 
 program
-  .option('--schemaFilePath [value]', 'path of your graphql schema file')
+  .option('--schemaFilePaths [value...]', 'path of your graphql schema file')
   .option('--destDirPath [value]', 'dir you want to store the generated queries')
   .option('--depthLimit [value]', 'query depth you want to limit(The default is 100)')
   .option('-C, --includeDeprecatedFields [value]', 'Flag to include deprecated fields (The default is to exclude)')
