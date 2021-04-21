@@ -14,8 +14,8 @@ program
   .option('-C, --includeDeprecatedFields [value]', 'Flag to include deprecated fields (The default is to exclude)')
   .parse(process.argv);
 
-const { schemaFilePath, destDirPath, depthLimit = 100, includeDeprecatedFields = false } = program;
-const gqlSchema = buildASTSchema(mergeTypeDefs(loadFilesSync(schemaFilePath)));
+const { schemaFilePaths, destDirPath, depthLimit = 100, includeDeprecatedFields = false } = program;
+const gqlSchema = buildASTSchema(mergeTypeDefs(loadFilesSync(schemaFilePaths)));
 
 del.sync(destDirPath);
 path
