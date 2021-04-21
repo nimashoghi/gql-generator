@@ -7,6 +7,8 @@ const { mergeTypeDefs } = require('@graphql-tools/merge');
 const { buildASTSchema } = require('graphql');
 const del = require('del');
 
+const CLIENT_FIELD_NAME = 'clientField'
+
 program
   .option('--schemaFilePaths <paths>', 'path of your graphql schema file', (value, _) => value.split(','))
   .option('--destDirPath [value]', 'dir you want to store the generated queries')
@@ -15,7 +17,7 @@ program
   .parse(process.argv);
 
 const { schemaFilePaths, destDirPath, depthLimit = 100, includeDeprecatedFields = false } = program;
-const gqlSchema = buildASTSchema(mergeTypeDefs(loadFilesSync(schemaFilePaths)));
+const gqlSchema = buildASTSchema(mergeTypeDefs([`directive @${CLIENT_FIELD_NAME} on FIELD_DEFINITION`, ...loadFilesSync(schemaFilePaths)]));
 
 del.sync(destDirPath);
 path
@@ -89,6 +91,7 @@ const generateQuery = (
   curDepth = 1
 ) => {
   const field = gqlSchema.getType(curParentType).getFields()[curName];
+  const isClient = field.astNode && (field.astNode.directives || []).some((field) => field.name.value === CLIENT_FIELD_NAME);
   const curTypeName = field.type.inspect().replace(/[[\]!]/g, '');
   const curType = gqlSchema.getType(curTypeName);
   let queryStr = '';
@@ -123,6 +126,9 @@ const generateQuery = (
     }
     if (childQuery) {
       queryStr += `{\n${childQuery}\n${'    '.repeat(curDepth)}}`;
+    }
+    if (isClient) {
+      queryStr += ' @client ';
     }
   }
 
